@@ -42,9 +42,12 @@ public class Statistics {
     }
 
     public Map<String, Double> getSystemRate() {
+        if (systemBook.size() == 0) {
+            return null;
+        }
         Map<String, Double> systemStatistic = new HashMap<>();
         for (Map.Entry<String, Integer> oneSystem : systemBook.entrySet()) {
-            systemStatistic.put(oneSystem.getKey(), (double) oneSystem.getValue() / systemBook.size() * 100);
+            systemStatistic.put(oneSystem.getKey(), (double) oneSystem.getValue() / systemBook.size());
         }
         return systemStatistic;
     }
