@@ -1,5 +1,4 @@
 public class UserAgent {
-    String[] line;
     private final String browser;
     private final String system;
 
@@ -7,28 +6,36 @@ public class UserAgent {
         String[] inLine= line.trim().split("\"");
         String workLine= inLine[inLine.length-1];
         if (workLine.contains("Windows")) {
-            browser = "Windows";
+            system = "Windows";
         } else {
             if (workLine.contains("macOS")) {
-                browser = "macOS";
+                system = "macOS";
             } else if (workLine.contains("Linux")) {
-                browser = "Linux";
-            } else {
-                browser = "other";
-            }
-        }
-        if (workLine.contains("Edge")) {
-            system = "Edge";
-        } else {
-            if (workLine.contains("Firefox")) {
-                system = "Firefox";
-            } else if (workLine.contains("Chrome")) {
-                system = workLine.contains("OPR/") ? "Opera":"Chrome";
-            } else if (workLine.contains("Opera")) {
-                system = "Opera";
+                system = "Linux";
             } else {
                 system = "other";
             }
         }
+        if (workLine.contains("Edge")) {
+            browser = "Edge";
+        } else {
+            if (workLine.contains("Firefox")) {
+                browser = "Firefox";
+            } else if (workLine.contains("Chrome")) {
+                browser = workLine.contains("OPR/") ? "Opera":"Chrome";
+            } else if (workLine.contains("Opera")) {
+                browser = "Opera";
+            } else {
+                browser = "other";
+            }
+        }
+    }
+
+    public String getBrowser() {
+        return browser;
+    }
+
+    public String getSystem() {
+        return system;
     }
 }
