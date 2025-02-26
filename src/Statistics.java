@@ -16,9 +16,14 @@ public class Statistics {
     private Map<String, Integer> systemBook = new HashMap<>();
     private Map<String, Integer> browserBook = new HashMap<>();
 
+    private int countUser;
+    private int countBadRequest;
+    private Set<String> ipBook = new HashSet<>();
+
     public void addEntry(LogEntry le) {
         LocalDateTime leTime = le.getdateTime();
         totalTraffic += le.getDataSize();
+        int requestCode = le.getRequestCode();
         if (leTime.isBefore(minTime)) {
             minTime = leTime;
         }
@@ -26,21 +31,46 @@ public class Statistics {
             maxTime = leTime;
         }
 
-        if (le.getRequestCode() == 200) {
+        if (requestCode == 200) {
             adressBook.add(le.getPath());
         }
-        if (le.getRequestCode() == 404) {
+        if (requestCode == 404) {
             missingAdressBook.add(le.getPath());
+        }
+        if (requestCode > 399 && requestCode < 600) {
+            countBadRequest++;
         }
         String leAgentSystem = le.getUserAgent().getSystem();
         String leAgentBrowser = le.getUserAgent().getBrowser();
         systemBook.put(leAgentSystem, systemBook.getOrDefault(leAgentSystem, 0) + 1);
         browserBook.put(leAgentBrowser, browserBook.getOrDefault(leAgentBrowser, 0) + 1);
 
+        if (!le.getUserAgent().isBot()) {
+            countUser++;
+            ipBook.add(le.getIp());
+        }
     }
 
+
+    public int averageVisitPerHour() {
+        return countUser / calculateHour();
+    }
+
+    public int averageBadRequest() {
+        return countBadRequest / calculateHour();
+    }
+
+    public int averageVisitOnePerson() {
+        return countUser / ipBook.size();
+    }
+
+    private int calculateHour() {
+        return (int) Duration.between(minTime, maxTime).toHours();
+    }
+
+
     public int getTrafficRate() {
-        int calculateHour = (int) Duration.between(minTime, maxTime).toHours();
+        int calculateHour = calculateHour();
         if (calculateHour == 0) {
             return totalTraffic;
         }
@@ -51,7 +81,7 @@ public class Statistics {
         return adressBook;
     }
 
-    public Set<String> getMissingAdressBook(){
+    public Set<String> getMissingAdressBook() {
         return missingAdressBook;
     }
 

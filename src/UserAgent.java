@@ -1,10 +1,16 @@
 public class UserAgent {
     private final String browser;
     private final String system;
+    private String fullLine;
+
+    public boolean isBot(){
+           return fullLine.contains("bot");
+        }
 
     public UserAgent(String line) {
-        String[] inLine= line.trim().split("\"");
-        String workLine= inLine[inLine.length-1];
+        fullLine = line;
+        String[] inLine = line.trim().split("\"");
+        String workLine = inLine[inLine.length - 1];
         if (workLine.contains("Windows")) {
             system = "Windows";
         } else {
@@ -22,7 +28,7 @@ public class UserAgent {
             if (workLine.contains("Firefox")) {
                 browser = "Firefox";
             } else if (workLine.contains("Chrome")) {
-                browser = workLine.contains("OPR/") ? "Opera":"Chrome";
+                browser = workLine.contains("OPR/") ? "Opera" : "Chrome";
             } else if (workLine.contains("Opera")) {
                 browser = "Opera";
             } else {
@@ -38,4 +44,9 @@ public class UserAgent {
     public String getSystem() {
         return system;
     }
+
+    public String getFullLine() {
+        return fullLine;
+    }
+
 }
