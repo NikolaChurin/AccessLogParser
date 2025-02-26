@@ -43,7 +43,7 @@ public class Statistics {
 
     public Map<String, Double> getSystemRate() {
         if (systemBook.size() == 0) {
-            return null;
+            return new HashMap<>();
         }
         Map<String, Double> systemStatistic = new HashMap<>();
         for (Map.Entry<String, Integer> oneSystem : systemBook.entrySet()) {
@@ -53,10 +53,3 @@ public class Statistics {
     }
 
 }
-
-//создайте у класса свойство (поле) int totalTraffic, в которое в методе addEntry добавляйте объём данных, отданных сервером;
-//создайте свойства (поля) minTime и maxTime класса LocalDateTime и заполняйте их в методе addEntry, если время в добавляемой
-// записи из лога меньше minTime или больше maxTime соответственно;
-//реализуйте в классе метод getTrafficRate, в котором вычисляйте разницу между maxTime и minTime в часах и делите общий объём
-// трафика на эту разницу.
-//●     Сделайте коммит в ветку master вашего репозитория access-log-parser.
