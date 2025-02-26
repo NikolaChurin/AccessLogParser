@@ -57,7 +57,7 @@ public class Statistics {
 
     public Map<String, Double> getSystemRate() {
         if (systemBook.size() == 0) {
-            return null;
+            return new HashMap<>();
         }
         Map<String, Double> systemStatistic = new HashMap<>();
 
@@ -69,7 +69,7 @@ public class Statistics {
 
     public Map<String, Double> getBrowserRate() {
         if (browserBook.size() == 0) {
-            return null;
+            return new HashMap<>();
         }
         Map<String, Double> browserStatistic = new HashMap<>();
 
