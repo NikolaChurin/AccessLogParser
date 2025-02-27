@@ -1,9 +1,7 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.time.ZoneOffset;
+import java.util.*;
 
 public class Statistics {
     private int totalTraffic;
@@ -18,7 +16,10 @@ public class Statistics {
 
     private int countUser;
     private int countBadRequest;
-    private Set<String> ipBook = new HashSet<>();
+    private Map<String, Integer> ipBook = new HashMap<>();
+    private Map<Long, Integer> secondBook = new HashMap<>();
+    private Set<String> referBook = new HashSet<>();
+
 
     public void addEntry(LogEntry le) {
         LocalDateTime leTime = le.getdateTime();
@@ -47,8 +48,16 @@ public class Statistics {
 
         if (!le.getUserAgent().isBot()) {
             countUser++;
-            ipBook.add(le.getIp());
+            String ip = le.getIp();
+            ipBook.put(ip, ipBook.getOrDefault(ip, 0) + 1);
+
+            long nowSecond = le.getdateTime().toEpochSecond(ZoneOffset.UTC);
+            secondBook.put(nowSecond, secondBook.getOrDefault(nowSecond, 0) + 1);
         }
+        String refer = le.getReferer();
+        int start = refer.indexOf("//") + 2;
+        int finish = refer.indexOf("/", start);
+        referBook.add(le.getReferer().substring(start, finish));
     }
 
 
@@ -64,6 +73,15 @@ public class Statistics {
         return countUser / ipBook.size();
     }
 
+
+    public int maxVisitOneSecond() {
+        return secondBook.values().stream().max(Comparator.comparingInt(t -> t)).orElse(0);
+    }
+
+    public int maxVisitOnePerson() {
+        return ipBook.values().stream().max(Comparator.comparingInt(t -> t)).orElse(0);
+    }
+
     private int calculateHour() {
         return (int) Duration.between(minTime, maxTime).toHours();
     }
@@ -75,14 +93,6 @@ public class Statistics {
             return totalTraffic;
         }
         return totalTraffic / calculateHour;
-    }
-
-    public Set<String> getAdressBook() {
-        return adressBook;
-    }
-
-    public Set<String> getMissingAdressBook() {
-        return missingAdressBook;
     }
 
     public Map<String, Double> getSystemRate() {
@@ -107,5 +117,17 @@ public class Statistics {
             browserStatistic.put(oneBrowser.getKey(), (double) oneBrowser.getValue() / browserBook.size());
         }
         return browserStatistic;
+    }
+
+    public Set<String> getReferBook() {
+        return referBook;
+    }
+
+    public Set<String> getAdressBook() {
+        return adressBook;
+    }
+
+    public Set<String> getMissingAdressBook() {
+        return missingAdressBook;
     }
 }
